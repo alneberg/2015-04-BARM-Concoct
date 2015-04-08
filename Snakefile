@@ -29,8 +29,8 @@ config["mapping_report_rules"]["markduplicates_metrics"] = sorted(expand("mappin
                                                                   reference=config["bowtie2_rules"]["references"],
                                                                   unit=config["bowtie2_rules"]["units"]))
 
-#SM_WORKFLOW_LOC="https://raw.githubusercontent.com/alneberg/snakemake-workflows/fe913ac3a40387dbe26558ac35c8a807236e466a/"
-SM_WORKFLOW_LOC="/proj/b2014214/repos/snakemake-workflows/"
+SM_WORKFLOW_LOC="https://raw.githubusercontent.com/alneberg/snakemake-workflows/a2a6cab285adad51f1997a03638cdf53b07b529b/"
+#SM_WORKFLOW_LOC="/proj/b2014214/repos/snakemake-workflows/"
 #SM_WORKFLOW_LOC="https://raw.githubusercontent.com/inodb/snakemake-workflows/fe913ac3a40387dbe26558ac35c8a807236e466a/"
 #SM_WORKFLOW_LOC = "/glob/inod/github/snakemake-workflows/"
 include: SM_WORKFLOW_LOC + "common/rules/track_dir.rules"
