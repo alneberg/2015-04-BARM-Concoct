@@ -3,7 +3,7 @@
     "mapping_params": {
         "default": ""
     },
-    "load_env": "module load bioinfo-tools bowtie2"
+    "load_env": "module load bioinfo-tools bowtie2 samtools/0.1.19"
 },
 "samtools_rules": {
     "load_env": "module load bioinfo-tools samtools/0.1.19 BEDTools/2.21.0",
