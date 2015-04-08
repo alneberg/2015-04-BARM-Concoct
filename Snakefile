@@ -44,6 +44,8 @@ include: SM_WORKFLOW_LOC + "bio/ngs/rules/blast/rpsblast.rules"
 include: SM_WORKFLOW_LOC + "bio/ngs/rules/annotation/hmmer.rules"
 localrules: track_changes
 
+# Reads are fasta
+ruleorder: bowtie2_map_fasta > bowtie2_map > sam_to_bam
 
 rule report:
     input:

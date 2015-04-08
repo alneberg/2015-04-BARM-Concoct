@@ -57,6 +57,14 @@
         "cores": "4",
         "extra_parameters": ""
     },
+    "schedule_bowtie2_map_fasta": {
+        "days": 1,
+        "hours": 0,
+        "minutes": 0,
+        "partition": "core",
+        "cores": "4",
+        "extra_parameters": ""
+    },
     "schedule_remove_mark_duplicates": {
         "days": 1,
         "hours": 0,
