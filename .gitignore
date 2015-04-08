@@ -1,3 +1,4 @@
 results/*
 concoct/*
 mapping/*
+.snakemake/*
