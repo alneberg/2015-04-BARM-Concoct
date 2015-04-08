@@ -1,0 +1,49 @@
+{"bowtie2_rules": {
+    "platform": "Illumina",
+    "mapping_params": {
+        "default": ""
+    },
+    "load_env": "module load bioinfo-tools bowtie2"
+},
+"samtools_rules": {
+    "load_env": "module load bioinfo-tools samtools/0.1.19 BEDTools/2.21.0",
+    "picard_jars": "/proj/b2010008/src/picard-tools-1.89/"
+},
+"mapping_report_rules": {},
+"concoct_rules": {
+    "load_env": "source activate concoct && module load bioinfo-tools MUMmer/3.23 # CONCOCT dev f4cb9fcb",
+    "mapper": "bowtie2",
+    "mapping_params": "default",
+    "concoct_params": {
+        "cutoff-1000-maxcluster-1000": "-c 1000 -l 1000"
+    },
+    "scripts_dir": "/proj/b2014214/repos/CONCOCT/scripts"
+},
+"prodigal_rules": {
+    "load_env": "module load bioinfo-tools prodigal/2.60",
+    "prodigal_params": {
+        "default-meta": "-p meta"
+    }
+},
+"rpsblast_rules": {
+    "load_env": "module load bioinfo-tools blast/2.2.29+ gnuparallel/20140222",
+    "rpsblast_params": {
+        "default-concoct": "-outfmt '6 qseqid sseqid evalue pident score qstart qend sstart send length slen' -max_target_seqs 1 -evalue 0.00001"
+    },
+    "databases": {
+        "cog": "/proj/b2010008/nobackup/database/cog_le/Cog"
+    },
+    "parallel_params": "-N 10 --env PATH"
+},
+"hmmer_rules": {
+        "load_env": "module load bioinfo-tools hmmer/3.1b1-gcc",
+        "hmmer_params": {
+            "default-concoct": "-E 0.0001 --cpu 16"
+        },
+        "databases": {
+            "all_pog": "/proj/b2010008/nobackup/database/pog/hmmer/3.1b1/databases/all_pog.hmm"
+        }
+    },
+"assemblies": ["/pica/v9/b2014214_nobackup/concoct_runs/results/assembly_v1/contigs/assembly_v1.fna"],
+"reads_dir": "/proj/b2014214/nobackup/pipeline_dir/samples/after_qc_luisa_baltic/"
+}
