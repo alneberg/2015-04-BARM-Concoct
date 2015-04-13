@@ -2,3 +2,5 @@ results/*
 concoct/*
 mapping/*
 .snakemake/*
+slurm-*
+reads_with_mate_annotation/*
