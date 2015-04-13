@@ -3,11 +3,11 @@
     "mapping_params": {
         "default": ""
     },
-    "load_env": "module load bioinfo-tools bowtie2 samtools/0.1.19"
+    "load_env": "module load bioinfo-tools bowtie2/2.2.3 samtools/1.1"
 },
 "samtools_rules": {
-    "load_env": "module load bioinfo-tools samtools/0.1.19 BEDTools/2.21.0",
-    "picard_jars": "/proj/b2010008/src/picard-tools-1.89/"
+    "load_env": "module load bioinfo-tools samtools/1.1 BEDTools/2.21.0",
+    "picard_jars": "/proj/b2010008/src/picard-tools-1.89"
 },
 "mapping_report_rules": {},
 "concoct_rules": {
@@ -45,5 +45,5 @@
         }
     },
 "assemblies": ["/pica/v9/b2014214_nobackup/concoct_runs/results/assembly_v1/contigs/assembly_v1.fna"],
-"reads_dir": "/proj/b2014214/nobackup/pipeline_dir/samples/after_qc_luisa_baltic/"
+"reads_dir": "/proj/b2014214/nobackup/concoct_runs/reads_with_mate_annotation"
 }
