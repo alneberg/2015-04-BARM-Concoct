@@ -31,7 +31,7 @@
         "default-concoct": "-outfmt '6 qseqid sseqid evalue pident score qstart qend sstart send length slen' -max_target_seqs 1 -evalue 0.00001"
     },
     "databases": {
-        "cog": "/proj/b2010008/nobackup/database/cog_le/Cog"
+        "cog": "/proj/b2010008/nobackup/database/Cog_uppnex/Cog"
     },
     "parallel_params": "-N 10 --env PATH"
 },

@@ -68,6 +68,143 @@ rule report:
         ) > {output}
         """
 
+#  add regular assemblies for prodigal to predict genes for
+for a_name, a in config["concoct_rules"]["assemblies"].items():
+    config["prodigal_rules"]["assemblies"][a_name] = a 
+
+#  add prodigal predicted genes as query for rpsblast
+config["rpsblast_rules"]["query_aas"] = {a: "annotation/prodigal/default-meta/{a}/proteins/proteins.faa".format(a=a) for a in config["prodigal_rules"]["assemblies"]}
+
+#  add prodigal predicted genes as query for hmmer
+config["hmmer_rules"]["query_aas"] = config["rpsblast_rules"]["query_aas"]
+
+rule merge_concoct_results:
+    input:
+        "concoct/{assembly}/output/{concoct_params}/clustering.csv"
+    output:
+        "concoct/{assembly}/output/{concoct_params}/clustering_merged.csv"
+    shell:
+        """
+            {config[concoct_rules][load_env]}
+            python scripts/majority_merge_cutup_clustering.py {input} > {output}
+        """
+
+rule concoct_eval_cog_table_merged:
+    """
+    Generate COG table from rpsblast output and concoct binning results
+    """
+    input:
+        clust="concoct/{assembly}/output/{concoct_params}/clustering_merged.csv",
+        rpsblast="blast/rpsblast/default-concoct/cog/{assembly}/rpsblast.out"
+    output:
+        "concoct/{assembly}/evaluation/scg/{concoct_params}/clustering_scg_merged.tsv"
+    shell:
+        """
+        {config[concoct_rules][load_env]}
+        python {config[concoct_rules][scripts_dir]}/COG_table.py \
+            -b {input.rpsblast} \
+            -m {config[concoct_rules][scripts_dir]}/../scgs/scg_cogs_min0.97_max1.03_unique_genera.txt \
+            -c {input.clust} \
+            --cdd_cog_file {config[concoct_rules][scripts_dir]}/../scgs/cdd_to_cog.tsv \
+            > {output}
+        """
+
+rule concoct_eval_cog_plot_merged:
+    """
+    Plot COGs using COG table
+    """
+    input:
+        "concoct/{assembly}/evaluation/scg/{concoct_params}/clustering_scg_merged.tsv"
+    output:
+        "concoct/{assembly}/evaluation/scg/{concoct_params}/clustering_scg_merged.pdf"
+    shell:
+        """
+        {config[concoct_rules][load_env]}
+        Rscript {config[concoct_rules][scripts_dir]}/COGPlot.R \
+            -s {input} \
+            -o {output}
+        """
+
+rule concoct_eval_all:
+    """
+    Plot COGs using COG table for both merged and cutup
+    """
+    input:
+        expand("concoct/{assembly}/evaluation/scg/{concoct_params}/clustering_scg_merged.pdf",
+                assembly=config["concoct_rules"]["assemblies"],
+                concoct_params = config["concoct_rules"]["concoct_params"]),
+        expand("concoct/{assembly}/evaluation/scg/{concoct_params}/clustering_scg.pdf",
+                assembly=config["concoct_rules"]["assemblies"],
+                concoct_params = config["concoct_rules"]["concoct_params"])
+
+rule concoct_extract_approved_scg_bins_merged:
+    input:
+        scg_tsvs=expand("concoct/{assembly}/evaluation/scg/{concoct_params}/clustering_scg_merged.tsv",
+            assembly=sorted(config["concoct_rules"]["assemblies"]),
+            concoct_params=sorted(config["concoct_rules"]["concoct_params"])),
+        asms=config["assemblies"]
+    output:
+        dynamic("concoct/approved_merged_scg_bins/{cluster_name}.fa")
+    params:
+        names=expand("{assembly}_{concoct_params}",
+            assembly=sorted(config["concoct_rules"]["assemblies"]),
+            concoct_params=sorted(config["concoct_rules"]["concoct_params"])),
+        groups=expand("{assembly}",
+            assembly=sorted(config["concoct_rules"]["assemblies"]),
+            concoct_params=sorted(config["concoct_rules"]["concoct_params"]))
+    shell:
+        """
+            {config[concoct_rules][load_env]}
+            python {config[concoct_rules][scripts_dir]}/extract_scg_bins.py \
+                --output_folder concoct/approved_merged_scg_bins \
+                --scg_tsvs {input.scg_tsvs} \
+                --fasta_files {input.asms} \
+                --names {params.names} \
+                --groups {params.groups} \
+                --max_missing_scg 5 \
+                --max_multicopy_scg 2
+         """
+
+rule concoct_extract_approved_scg_bins_all_merged:
+    input:
+        dynamic("concoct/approved_merged_scg_bins/{cluster_name}.fa")
+
+
+rule concoct_dnadiff_dist_matrix_merged:
+    """Get distance matrix from approved SCG bins"""
+    input:
+        clusters=dynamic("concoct/approved_merged_scg_bins/{cluster_name}.fa")
+    output:
+        "concoct/dnadiff_dist_matrix_merged/dist_matrix.tsv",
+        "concoct/dnadiff_dist_matrix_merged/hclust_heatmap.pdf",
+        "concoct/dnadiff_dist_matrix_merged/hclust_dendrogram.pdf"
+    run:
+        mags="concoct/mags/*.fa"
+        sorted_input = sorted(input.clusters)
+        shell("""
+        {config[concoct_rules][load_env]}
+        python {config[concoct_rules][scripts_dir]}/dnadiff_dist_matrix.py \
+            concoct/dnadiff_dist_matrix_merged {sorted_input} {mags}
+        """)
+
+rule concoct_dnadiff_dist_matrix_mags:
+    """Get distance matrix from approved SCG bins"""
+    input:
+        clusters=dynamic("concoct/approved_scg_bins/{cluster_name}.fa")
+    output:
+        "concoct/dnadiff_dist_matrix_mags/dist_matrix.tsv",
+        "concoct/dnadiff_dist_matrix_mags/hclust_heatmap.pdf",
+        "concoct/dnadiff_dist_matrix_mags/hclust_dendrogram.pdf"
+    run:
+        mags="concoct/mags/*.fa"
+        sorted_input = sorted(input.clusters)
+        shell("""
+        {config[concoct_rules][load_env]}
+        python {config[concoct_rules][scripts_dir]}/dnadiff_dist_matrix.py \
+            concoct/dnadiff_dist_matrix_mags {sorted_input} {mags}
+        """)
+
+
 rule track_changes:
     input:
         "results_track.txt"

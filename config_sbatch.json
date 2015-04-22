@@ -33,11 +33,11 @@
     },
     "schedule_concoct_generate_coverage_table_10K": "schedule_bedtools_coverage",
     "schedule_concoct_run_10K": {
-        "days": 1,
+        "days": 3,
         "hours": 0,
         "minutes": 0,
         "partition": "core",
-        "cores": "5",
+        "cores": "11",
         "extra_parameters": ""
     },
     "schedule_concoct_run_10K_all": "schedule_default",
@@ -149,5 +149,14 @@
     "schedule_sample_merge": "schedule_bowtie2_map",
     "schedule_concoct_eval_cog_table": "schedule_bedtools_coverage",
     "schedule_concoct_eval_cog_plot": "schedule_short",
-    "schedule_concoct_eval_cog_plot_all": "schedule_short"
+    "schedule_concoct_eval_cog_plot_all": "schedule_short",
+    "schedule_concoct_eval_cog_plot_merged": "schedule_short",
+    "schedule_concoct_eval_all": "schedule_short",
+    "schedule_merge_concoct_results": "schedule_short",
+    "schedule_concoct_eval_cog_table_merged": "schedule_bedtools_coverage",
+    "schedule_concoct_extract_approved_scg_bins_all_merged": "schedule_short",
+    "schedule_concoct_extract_approved_scg_bins_merged": "schedule_short",
+    "schedule_concoct_dnadiff_dist_matrix_merged": "schedule_trimmomatic_pe",
+    "schedule_concoct_dnadiff_dist_matrix": "schedule_trimmomatic_pe",
+    "schedule_concoct_dnadiff_dist_matrix_mags": "schedule_trimmomatic_pe"
 }
